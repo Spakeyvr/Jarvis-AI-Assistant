@@ -22,7 +22,7 @@ WAKE_PHRASE = "hey jarvis"
 WAKE_WORD_ENGINE = "openwakeword"  # Options: "openwakeword" (recommended), "whisper" (legacy)
 
 # openWakeWord settings (recommended - dedicated wake word engine)
-OPENWAKEWORD_THRESHOLD = 0.5  # Detection threshold (0.0-1.0). Lower = more sensitive, higher = more strict
+OPENWAKEWORD_THRESHOLD = 0.6  # Detection threshold (0.0-1.0). Lower = more sensitive, higher = more strict
 WAKE_WORD_DEBUG = False  # set to True to see wake word scores in real-time
 
 # Legacy Whisper wake word settings (only used if WAKE_WORD_ENGINE = "whisper")
