@@ -26,6 +26,7 @@ git lfs install
 git clone https://github.com/Spakeyvr/Jarvis-AI-Assistant.git
 cd Jarvis-AI-Assistant
 ```
+(You can also download the .zip file and extract it in case you aren't experienced with Git)
 
 ### 3. Install Python dependencies
 
