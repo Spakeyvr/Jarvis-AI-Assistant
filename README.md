@@ -65,4 +65,4 @@ Important:
 - It is not able to access any files.
 - It is not able to access your camera.
 - There is no data being sent to any servers.
-- The only times it will access the internet is when you first run it and it downloads the required models..
+- The only times it will access the internet is when you first run it and it downloads the required models.
