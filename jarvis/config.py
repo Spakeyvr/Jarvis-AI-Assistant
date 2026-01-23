@@ -23,7 +23,7 @@ WAKE_PHRASE = "hey jarvis"
 # Conversation continuation settings
 # When enabled, you can continue talking without saying "Hey Jarvis" for a few seconds after a response
 CONTINUE_CONVERSATION_ENABLED = True
-CONTINUE_CONVERSATION_TIMEOUT = 5  # Seconds to wait for follow-up before returning to wake word mode
+CONTINUE_CONVERSATION_TIMEOUT = 2  # Seconds to wait for follow-up before returning to wake word mode
 WAKE_WORD_MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"
 WAKE_WORD_MODEL_DIR = MODELS_DIR / "vosk"
 
