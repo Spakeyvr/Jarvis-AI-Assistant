@@ -14,18 +14,18 @@ LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3-8B"
 # Audio settings
 SAMPLE_RATE = 16000  # Required for Vosk and Whisper
 CHANNELS = 1
-CHUNK_SIZE = 4000  # Audio chunk size for processing
+CHUNK_SIZE = 8000  # Audio chunk size for processing (0.5 seconds at 16kHz)
 MIC_DEVICE_INDEX = None  # None = use system default, or set to device index number
 
-# Wake word settings
+# Wake word settings (using Distil-Whisper)
 WAKE_PHRASE = "hey jarvis"
+WAKE_WORD_ENERGY_THRESHOLD = 0.01  # Minimum audio energy to process for wake word
+WAKE_WORD_DEBUG = False  # Set to True to see what Whisper is recognizing in real-time
 
 # Conversation continuation settings
 # When enabled, you can continue talking without saying "Hey Jarvis" for a few seconds after a response
 CONTINUE_CONVERSATION_ENABLED = True
 CONTINUE_CONVERSATION_TIMEOUT = 2  # Seconds to wait for follow-up before returning to wake word mode
-WAKE_WORD_MODEL_URL = "https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip"
-WAKE_WORD_MODEL_DIR = MODELS_DIR / "vosk"
 
 # Speech-to-text settings (Distil-Whisper)
 WHISPER_MODEL = "distil-whisper/distil-large-v3"  # ~750M params, fast & accurate
@@ -51,5 +51,4 @@ JARVIS_VOICES = {
 }
 
 # Create directories if they don't exist
-os.makedirs(WAKE_WORD_MODEL_DIR, exist_ok=True)
 os.makedirs(PIPER_MODEL_DIR, exist_ok=True)

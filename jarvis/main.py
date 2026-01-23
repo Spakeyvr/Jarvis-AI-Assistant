@@ -21,13 +21,13 @@ class Jarvis:
         print("=" * 50)
 
         # Import and initialize components
-        print("\n[1/4] Loading wake word detector...")
-        from wake_word import WakeWordDetector
-        self.wake_word = WakeWordDetector()
-
-        print("\n[2/4] Loading speech-to-text (Distil-Whisper)...")
+        print("\n[1/4] Loading speech-to-text (Distil-Whisper)...")
         from speech_to_text import SpeechToText
         self.stt = SpeechToText()
+
+        print("\n[2/4] Loading wake word detector (using shared Whisper model)...")
+        from wake_word import WakeWordDetector
+        self.wake_word = WakeWordDetector()
 
         print("\n[3/4] Loading LLM (Qwen3-8B)...")
         from llm_handler import LLMHandler
@@ -133,8 +133,8 @@ class Jarvis:
                     print("\nListening for 'Hey Jarvis'...")
                     self.wake_word.start_listening()
 
-                # Small sleep to prevent busy-waiting
-                time.sleep(0.1)
+                # Small sleep to prevent busy-waiting and allow audio buffering
+                time.sleep(0.05)
 
         except KeyboardInterrupt:
             print("\n\nShutting down Jarvis...")

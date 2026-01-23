@@ -1,49 +1,49 @@
-"""Wake word detection using Vosk for 'Hey Jarvis'."""
+"""Wake word detection using Distil-Whisper for 'Hey Jarvis'."""
 
-import os
-import json
-import zipfile
-import urllib.request
 import numpy as np
-from vosk import Model, KaldiRecognizer
+import torch
+from transformers import AutoModelForSpeechSeq2Seq, AutoProcessor, pipeline
 import config
 from audio_utils import AudioRecorder
+from collections import deque
 
 
 class WakeWordDetector:
-    """Detects the wake phrase 'Hey Jarvis' using Vosk."""
+    """Detects the wake phrase 'Hey Jarvis' using Distil-Whisper."""
 
     def __init__(self):
-        self.model = None
-        self.recognizer = None
         self.recorder = None
-        self._ensure_model_downloaded()
+        self.debug = config.WAKE_WORD_DEBUG
+        self.audio_buffer = deque(maxlen=5)  # Keep last 5 chunks (~2.5 seconds)
+        self.whisper_pipe = None
         self._load_model()
 
-    def _ensure_model_downloaded(self):
-        """Download Vosk model if not present."""
-        model_path = config.WAKE_WORD_MODEL_DIR / "vosk-model-small-en-us-0.15"
-
-        if not model_path.exists():
-            print("Downloading Vosk model for wake word detection...")
-            zip_path = config.WAKE_WORD_MODEL_DIR / "model.zip"
-
-            # Download the model
-            urllib.request.urlretrieve(config.WAKE_WORD_MODEL_URL, zip_path)
-
-            # Extract the model
-            with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(config.WAKE_WORD_MODEL_DIR)
-
-            # Clean up zip file
-            os.remove(zip_path)
-            print("Vosk model downloaded successfully.")
-
     def _load_model(self):
-        """Load the Vosk model."""
-        model_path = config.WAKE_WORD_MODEL_DIR / "vosk-model-small-en-us-0.15"
-        self.model = Model(str(model_path))
-        self.recognizer = KaldiRecognizer(self.model, config.SAMPLE_RATE)
+        """Load the Distil-Whisper model (shared with speech-to-text)."""
+        print("Initializing Distil-Whisper for wake word detection...")
+
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+
+        model = AutoModelForSpeechSeq2Seq.from_pretrained(
+            config.WHISPER_MODEL,
+            torch_dtype=torch_dtype,
+            low_cpu_mem_usage=True,
+            use_safetensors=True
+        )
+        model.to(device)
+
+        processor = AutoProcessor.from_pretrained(config.WHISPER_MODEL)
+
+        self.whisper_pipe = pipeline(
+            "automatic-speech-recognition",
+            model=model,
+            tokenizer=processor.tokenizer,
+            feature_extractor=processor.feature_extractor,
+            torch_dtype=torch_dtype,
+            device=device,
+        )
+        print("Distil-Whisper ready for wake word detection.")
 
     def start_listening(self):
         """Start the audio recorder for wake word detection."""
@@ -56,6 +56,29 @@ class WakeWordDetector:
             self.recorder.stop()
             self.recorder = None
 
+    def _check_wake_phrase_match(self, text):
+        """Check if text contains wake phrase - strict matching for 'hey jarvis'."""
+        text_lower = text.lower().strip()
+
+        # Must contain both "hey" and "jarvis" (or close variations)
+        words = text_lower.split()
+
+        # Check for "hey" or common mishearings
+        has_hey = any(w in ["hey", "hay", "a"] for w in words)
+
+        # Check for "jarvis" or common mishearings
+        has_jarvis = any(w in ["jarvis", "javis", "jarvas", "javas"] for w in words)
+
+        # Must have BOTH hey and jarvis
+        if has_hey and has_jarvis:
+            return True
+
+        # Also accept exact phrase match
+        if "hey jarvis" in text_lower or "hey javis" in text_lower:
+            return True
+
+        return False
+
     def check_for_wake_word(self):
         """
         Check if the wake word was detected in the audio stream.
@@ -64,30 +87,55 @@ class WakeWordDetector:
         if not self.recorder:
             return False
 
+        # Get audio chunk
         chunk = self.recorder.get_audio_chunk(timeout=0.5)
         if chunk is None:
             return False
 
-        # Convert float32 to int16 for Vosk
-        audio_int16 = (chunk * 32767).astype(np.int16)
+        # Calculate RMS energy
+        rms = np.sqrt(np.mean(chunk**2))
 
-        if self.recognizer.AcceptWaveform(audio_int16.tobytes()):
-            result = json.loads(self.recognizer.Result())
-            text = result.get("text", "").lower()
+        # Only process if there's sufficient audio energy
+        if rms < config.WAKE_WORD_ENERGY_THRESHOLD:
+            return False
 
-            if config.WAKE_PHRASE in text:
-                print(f"Wake word detected: '{text}'")
-                self.recognizer.Reset()
-                return True
-        else:
-            # Check partial results for faster response
-            partial = json.loads(self.recognizer.PartialResult())
-            partial_text = partial.get("partial", "").lower()
+        # Add to buffer
+        self.audio_buffer.append(chunk)
 
-            if config.WAKE_PHRASE in partial_text:
-                print(f"Wake word detected (partial): '{partial_text}'")
-                self.recognizer.Reset()
-                return True
+        # Process accumulated buffer every few chunks for efficiency
+        if len(self.audio_buffer) >= 3:  # Process every ~1.5 seconds
+            # Concatenate buffer
+            audio_data = np.concatenate(list(self.audio_buffer))
+
+            # Transcribe using Whisper
+            try:
+                result = self.whisper_pipe(
+                    {"raw": audio_data.astype(np.float32), "sampling_rate": config.SAMPLE_RATE},
+                    generate_kwargs={"language": "english"},
+                    return_timestamps=False
+                )
+
+                text = result["text"].strip().lower()
+
+                if self.debug and text:
+                    print(f"[DEBUG] Whisper recognized: '{text}' (energy: {rms:.4f})")
+
+                # Check if wake word is present
+                if self._check_wake_phrase_match(text):
+                    print(f"Wake word detected: '{text}' (energy: {rms:.4f})")
+                    self.audio_buffer.clear()
+                    # Clear remaining audio queue to avoid reprocessing
+                    self.recorder.clear_queue()
+                    return True
+
+            except Exception as e:
+                if self.debug:
+                    print(f"[DEBUG] Whisper error: {e}")
+
+            # Keep only last 2 chunks to maintain rolling window
+            if len(self.audio_buffer) >= 5:
+                self.audio_buffer.popleft()
+                self.audio_buffer.popleft()
 
         return False
 

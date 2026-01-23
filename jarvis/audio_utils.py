@@ -102,7 +102,17 @@ class AudioRecorder:
         """Callback for audio stream."""
         if status:
             print(f"Audio status: {status}")
-        self.audio_queue.put(indata.copy())
+
+        # Convert to mono if stereo
+        audio_data = indata.copy()
+        if len(audio_data.shape) > 1 and audio_data.shape[1] > 1:
+            # Average channels to convert stereo to mono
+            audio_data = np.mean(audio_data, axis=1, keepdims=False)
+
+        # Ensure 1D array
+        audio_data = audio_data.flatten()
+
+        self.audio_queue.put(audio_data)
 
     def start(self):
         """Start recording audio."""
