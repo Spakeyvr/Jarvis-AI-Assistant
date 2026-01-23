@@ -46,7 +46,7 @@ pip install huggingface-hub
 huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B
 ```
 
-Alternatively, you can download it manually from [Hugging Face]([https://huggingface.co/Qwen/Qwen3-8B) and place it in a folder named `Qwen3-8B` in the project root.
+Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) and place it in a folder named `Qwen3-8B` in the project root.
 
 ### 5. Run the assistant
 
