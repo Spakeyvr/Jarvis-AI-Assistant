@@ -1,0 +1,12 @@
+# Model card for jarvis (high)
+
+* Language: en_GB (English, Great Britain)
+* Speakers: 1
+* Quality: high
+* Samplerate: 22,050Hz
+
+## Dataset
+
+## Training
+
+Fine-tuned over 1000 epochs from U.S. lessac (high quality).

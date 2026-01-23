@@ -1,7 +1,9 @@
 # Model files (too large for GitHub)
 jarvis/models/
-jarvis-voice/
 Qwen3-8B/
+
+# Training checkpoints (not needed for inference)
+*.ckpt
 
 # Python
 __pycache__/

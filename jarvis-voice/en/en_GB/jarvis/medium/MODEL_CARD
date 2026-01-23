@@ -1,0 +1,12 @@
+# Model card for jarvis (medium)
+
+* Language: en_GB (English, Great Britain)
+* Speakers: 1
+* Quality: medium
+* Samplerate: 22,050Hz
+
+## Dataset
+
+## Training
+
+Fine-tuned over 2000 epochs from G.B. English alan voice (medium quality).

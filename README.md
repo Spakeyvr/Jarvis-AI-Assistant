@@ -5,13 +5,57 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 - Generate responses using Qwen3-8B
 - Speak responses using Piper
 
-To install the required dependencies, run the following command:
+## System Requirements
+
+- **Disk Space**: ~18 GB for models
+- **RAM**: 8 GB minimum (16 GB recommended)
+- **GPU**: Optional (CUDA-compatible GPU will improve performance)
+- **OS**: Windows, Linux, or macOS
+
+## Installation
+
+### 1. Install Git LFS (for voice models)
+
+```bash
+git lfs install
+```
+
+### 2. Clone the repository
+
+```bash
+git clone https://github.com/Spakeyvr/Jarvis-AI-Assistant.git
+cd Jarvis-AI-Assistant
+```
+
+### 3. Install Python dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-To run the Jarvis AI assistant, open the run.bat file.
+### 4. Download the Qwen3-8B model
+
+The language model is not included in this repository due to its size (~16 GB). Download it from Hugging Face:
+
+```bash
+# Install huggingface-cli if you don't have it
+pip install huggingface-hub
+
+# Download the model
+huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B
+```
+
+Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen2.5-8B-Instruct) and place it in a folder named `Qwen3-8B` in the project root.
+
+### 5. Run the assistant
+
+```bash
+# Windows
+run.bat
+
+# Linux/Mac
+python jarvis/main.py
+```
 
 Important:
 - It does not have real-time data access.
