@@ -63,13 +63,15 @@ class SpeechToText:
         duration = len(audio_data) / sample_rate
 
         # Minimum thresholds for valid speech:
-        # - RMS energy should be above background noise level (0.02)
-        # - Duration should be at least 0.3 seconds for meaningful speech
-        min_speech_energy = 0.02
-        min_speech_duration = 0.3
+        # - RMS energy should be above background noise level (lowered to 0.01)
+        # - Duration should be at least 0.2 seconds for meaningful speech
+        min_speech_energy = 0.01
+        min_speech_duration = 0.2
 
         if rms_energy < min_speech_energy or duration < min_speech_duration:
             # Audio is likely just background noise or too brief to be speech
+            if config.WAKE_WORD_DEBUG:
+                print(f"[DEBUG STT] Audio rejected - energy: {rms_energy:.4f}, duration: {duration:.2f}s")
             return ""
 
         # Transcribe using pipeline

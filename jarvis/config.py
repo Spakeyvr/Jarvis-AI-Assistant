@@ -17,10 +17,17 @@ CHANNELS = 1
 CHUNK_SIZE = 8000  # Audio chunk size for processing (0.5 seconds at 16kHz)
 MIC_DEVICE_INDEX = None  # None = use system default, or set to device index number
 
-# Wake word settings (using Distil-Whisper)
+# Wake word settings
 WAKE_PHRASE = "hey jarvis"
-WAKE_WORD_ENERGY_THRESHOLD = 0.01  # Minimum audio energy to process for wake word
-WAKE_WORD_DEBUG = False  # Set to True to see what Whisper is recognizing in real-time
+WAKE_WORD_ENGINE = "openwakeword"  # Options: "openwakeword" (recommended), "whisper" (legacy)
+
+# openWakeWord settings (recommended - dedicated wake word engine)
+OPENWAKEWORD_THRESHOLD = 0.5  # Detection threshold (0.0-1.0). Lower = more sensitive, higher = more strict
+WAKE_WORD_DEBUG = False  # set to True to see wake word scores in real-time
+
+# Legacy Whisper wake word settings (only used if WAKE_WORD_ENGINE = "whisper")
+WAKE_WORD_ENERGY_THRESHOLD = 0.005  # Minimum audio energy to process for wake word (lowered for better sensitivity)
+WAKE_WORD_SENSITIVITY = "medium"  # Options: "low", "medium", "high" - controls detection strictness
 
 # Conversation continuation settings
 # When enabled, you can continue talking without saying "Hey Jarvis" for a few seconds after a response
@@ -47,7 +54,7 @@ PIPER_MODEL_DIR = MODELS_DIR / "piper"
 JARVIS_VOICE_DIR = PROJECT_ROOT / "jarvis-voice" / "en" / "en_GB" / "jarvis"
 JARVIS_VOICES = {
     "jarvis-high": JARVIS_VOICE_DIR / "high",
-    "jarvis-medium": JARVIS_VOICE_DIR / "medium",
+    "jarvis-medium": JARVIS_VOICE_DIR / "medium", # This Jarvis voice will be replaced by a new & better voice in the future
 }
 
 # Create directories if they don't exist

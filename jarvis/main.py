@@ -9,6 +9,7 @@ import sys
 import signal
 import time
 import keyboard
+import config
 
 
 class Jarvis:
@@ -25,8 +26,14 @@ class Jarvis:
         from speech_to_text import SpeechToText
         self.stt = SpeechToText()
 
-        print("\n[2/4] Loading wake word detector (using shared Whisper model)...")
-        from wake_word import WakeWordDetector
+        print("\n[2/4] Loading wake word detector...")
+        # Import wake word detector based on config
+        if config.WAKE_WORD_ENGINE == "openwakeword":
+            print("Using openWakeWord engine (dedicated wake word detection)")
+            from wake_word_openwakeword import WakeWordDetector
+        else:
+            print("Using Whisper engine (legacy)")
+            from wake_word import WakeWordDetector
         self.wake_word = WakeWordDetector()
 
         print("\n[3/4] Loading LLM (Qwen3-8B)...")
@@ -110,10 +117,14 @@ class Jarvis:
                 if self.wake_word.check_for_wake_word():
                     # Wake word detected - play acknowledgment
                     print("\nWake word detected!")
-                    self.sfx.play_listening_start()  # High-pitched "dun dun"
 
                     # Stop wake word listening temporarily
                     self.wake_word.stop_listening()
+
+                    # Small delay to ensure audio buffers are clear
+                    time.sleep(0.2)
+
+                    self.sfx.play_listening_start()  # High-pitched "dun dun"
 
                     # Listen for the question
                     question = self.stt.listen_and_transcribe()

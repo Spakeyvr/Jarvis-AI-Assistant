@@ -14,8 +14,9 @@ class WakeWordDetector:
     def __init__(self):
         self.recorder = None
         self.debug = config.WAKE_WORD_DEBUG
-        self.audio_buffer = deque(maxlen=5)  # Keep last 5 chunks (~2.5 seconds)
+        self.audio_buffer = deque(maxlen=6)  # Keep last 6 chunks (~3 seconds) for better context
         self.whisper_pipe = None
+        self.sensitivity = config.WAKE_WORD_SENSITIVITY
         self._load_model()
 
     def _load_model(self):
@@ -57,25 +58,50 @@ class WakeWordDetector:
             self.recorder = None
 
     def _check_wake_phrase_match(self, text):
-        """Check if text contains wake phrase - strict matching for 'hey jarvis'."""
-        text_lower = text.lower().strip()
+        """Check if text contains wake phrase with sensitivity-based matching."""
+        import string
 
-        # Must contain both "hey" and "jarvis" (or close variations)
+        # Remove all punctuation and convert to lowercase
+        text_lower = text.lower().strip()
+        text_lower = text_lower.translate(str.maketrans('', '', string.punctuation))
+
+        # Define sensitivity levels
+        if self.sensitivity == "high":
+            # High sensitivity - catches common variations
+            hey_words = ["hey", "hay", "hi"]
+            jarvis_words = ["jarvis", "javis", "jarvas", "jarves"]
+        elif self.sensitivity == "medium":
+            # Balanced - reasonable variations
+            hey_words = ["hey", "hay"]
+            jarvis_words = ["jarvis", "javis"]
+        else:  # low
+            # Strict - only close matches
+            hey_words = ["hey"]
+            jarvis_words = ["jarvis"]
+
+        # Split into words for analysis
         words = text_lower.split()
 
-        # Check for "hey" or common mishearings
-        has_hey = any(w in ["hey", "hay", "a"] for w in words)
+        # Check for "hey" variations
+        has_hey = any(w in hey_words for w in words)
 
-        # Check for "jarvis" or common mishearings
-        has_jarvis = any(w in ["jarvis", "javis", "jarvas", "javas"] for w in words)
+        # Check for "jarvis" variations
+        has_jarvis = any(w in jarvis_words for w in words)
 
         # Must have BOTH hey and jarvis
         if has_hey and has_jarvis:
             return True
 
-        # Also accept exact phrase match
-        if "hey jarvis" in text_lower or "hey javis" in text_lower:
-            return True
+        # Also check for phrase matches (in case words are merged)
+        for hey in ["hey", "hay", "hi"]:
+            for jarvis in jarvis_words:
+                phrase = f"{hey} {jarvis}"
+                if phrase in text_lower:
+                    return True
+                # Check for merged words like "heyjarvis"
+                merged = f"{hey}{jarvis}"
+                if merged in text_lower.replace(" ", ""):
+                    return True
 
         return False
 
@@ -102,9 +128,9 @@ class WakeWordDetector:
         # Add to buffer
         self.audio_buffer.append(chunk)
 
-        # Process accumulated buffer every few chunks for efficiency
-        if len(self.audio_buffer) >= 3:  # Process every ~1.5 seconds
-            # Concatenate buffer
+        # Process more frequently (every 2 chunks = ~1 second) for faster response
+        if len(self.audio_buffer) >= 2:
+            # Concatenate buffer for analysis
             audio_data = np.concatenate(list(self.audio_buffer))
 
             # Transcribe using Whisper
@@ -118,7 +144,7 @@ class WakeWordDetector:
                 text = result["text"].strip().lower()
 
                 if self.debug and text:
-                    print(f"[DEBUG] Whisper recognized: '{text}' (energy: {rms:.4f})")
+                    print(f"[DEBUG] Whisper recognized: '{text}' (energy: {rms:.4f}, sensitivity: {self.sensitivity})")
 
                 # Check if wake word is present
                 if self._check_wake_phrase_match(text):
@@ -132,9 +158,9 @@ class WakeWordDetector:
                 if self.debug:
                     print(f"[DEBUG] Whisper error: {e}")
 
-            # Keep only last 2 chunks to maintain rolling window
-            if len(self.audio_buffer) >= 5:
-                self.audio_buffer.popleft()
+            # Maintain sliding window - remove oldest chunk but keep overlap
+            # This ensures we don't miss wake words that span chunk boundaries
+            if len(self.audio_buffer) >= 4:
                 self.audio_buffer.popleft()
 
         return False
