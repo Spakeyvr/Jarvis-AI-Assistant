@@ -55,6 +55,23 @@ class SpeechToText:
         # Ensure audio is float32
         audio_data = audio_data.astype(np.float32)
 
+        # Check if audio contains meaningful speech energy
+        # Calculate RMS energy of the audio
+        rms_energy = np.sqrt(np.mean(audio_data**2))
+
+        # Calculate audio duration
+        duration = len(audio_data) / sample_rate
+
+        # Minimum thresholds for valid speech:
+        # - RMS energy should be above background noise level (0.02)
+        # - Duration should be at least 0.3 seconds for meaningful speech
+        min_speech_energy = 0.02
+        min_speech_duration = 0.3
+
+        if rms_energy < min_speech_energy or duration < min_speech_duration:
+            # Audio is likely just background noise or too brief to be speech
+            return ""
+
         # Transcribe using pipeline
         result = self.pipe(
             {"raw": audio_data, "sampling_rate": sample_rate},

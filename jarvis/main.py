@@ -8,6 +8,7 @@ listening for 'Hey Jarvis' wake word and responding to questions.
 import sys
 import signal
 import time
+import keyboard
 
 
 class Jarvis:
@@ -36,7 +37,12 @@ class Jarvis:
         from text_to_speech import TextToSpeech
         self.tts = TextToSpeech()
 
-        self.running = False 
+        print("\n[5/5] Loading sound effects...")
+        from sound_effects import SoundEffects
+        self.sfx = SoundEffects()
+
+        self.running = False
+        self._keyboard_hook_registered = False
         print("\n" + "=" * 50)
         print("Jarvis AI initialized successfully!")
         print("=" * 50)
@@ -60,11 +66,30 @@ class Jarvis:
         # Speak the response
         self.tts.speak(response)
 
+    def _setup_global_keyboard_hook(self):
+        """Setup global keyboard hook for Ctrl+C that works even when terminal isn't focused."""
+        def on_ctrl_c():
+            """Handler for Ctrl+C hotkey."""
+            print("\n\nReceived Ctrl+C (global hotkey)...")
+            self.running = False
+
+        try:
+            # Register Ctrl+C as a global hotkey
+            keyboard.add_hotkey('ctrl+c', on_ctrl_c, suppress=False)
+            self._keyboard_hook_registered = True
+            print("Global Ctrl+C hotkey registered (works from any window)")
+        except Exception as e:
+            print(f"Warning: Could not register global Ctrl+C hotkey: {e}")
+            print("Ctrl+C will only work when terminal is focused.")
+
     def run(self):
         """Main loop - listen for wake word and process questions."""
         import config
 
         self.running = True
+
+        # Setup global keyboard hook for Ctrl+C
+        self._setup_global_keyboard_hook()
 
         # Greeting
         self.tts.speak("Jarvis online. How may I assist you?")
@@ -74,7 +99,7 @@ class Jarvis:
         print("Say 'Hey Jarvis' followed by your question.")
         if config.CONTINUE_CONVERSATION_ENABLED:
             print(f"(Follow-up mode: {config.CONTINUE_CONVERSATION_TIMEOUT}s window after each response)")
-        print("Press Ctrl+C to exit.")
+        print("Press Ctrl+C to exit (works globally).")
         print("-" * 50 + "\n")
 
         self.wake_word.start_listening()
@@ -85,12 +110,16 @@ class Jarvis:
                 if self.wake_word.check_for_wake_word():
                     # Wake word detected - play acknowledgment
                     print("\nWake word detected!")
+                    self.sfx.play_listening_start()  # High-pitched "dun dun"
 
                     # Stop wake word listening temporarily
                     self.wake_word.stop_listening()
 
                     # Listen for the question
                     question = self.stt.listen_and_transcribe()
+
+                    # Play processing sound
+                    self.sfx.play_listening_stop()  # Low-pitched "dun dun"
 
                     # Process and respond
                     self.process_question(question)
@@ -103,6 +132,9 @@ class Jarvis:
                     # Resume wake word listening
                     print("\nListening for 'Hey Jarvis'...")
                     self.wake_word.start_listening()
+
+                # Small sleep to prevent busy-waiting
+                time.sleep(0.1)
 
         except KeyboardInterrupt:
             print("\n\nShutting down Jarvis...")
@@ -126,12 +158,23 @@ class Jarvis:
                 print("No follow-up detected, returning to wake word mode.")
                 break
 
+            # Play processing sound
+            self.sfx.play_listening_stop()  # Low-pitched "dun dun"
+
             # Process the follow-up question
             self.process_question(question)
 
     def shutdown(self):
         """Clean shutdown of Jarvis."""
         self.running = False
+
+        # Unregister global keyboard hook
+        if self._keyboard_hook_registered:
+            try:
+                keyboard.unhook_all()
+            except Exception:
+                pass
+
         self.wake_word.stop_listening()
         self.tts.speak("Goodbye.")
         print("Jarvis has been shut down.")
