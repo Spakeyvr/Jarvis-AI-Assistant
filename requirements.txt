@@ -1,0 +1,10 @@
+torch
+transformers
+accelerate
+bitsandbytes
+vosk
+piper-tts
+sounddevice
+soundfile
+numpy
+scipy

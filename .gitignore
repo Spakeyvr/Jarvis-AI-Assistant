@@ -1,0 +1,47 @@
+# Model files (too large for GitHub)
+jarvis/models/
+jarvis-voice/
+Qwen3-8B/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Windows reserved filenames
+nul
+CON
+PRN
+AUX
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
