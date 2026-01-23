@@ -26,6 +26,7 @@ git lfs install
 git clone https://github.com/Spakeyvr/Jarvis-AI-Assistant.git
 cd Jarvis-AI-Assistant
 ```
+(You can also download the .zip file and extract it in case you aren't experienced with Git)
 
 ### 3. Install Python dependencies
 
@@ -45,7 +46,7 @@ pip install huggingface-hub
 huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B
 ```
 
-Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen2.5-8B-Instruct) and place it in a folder named `Qwen3-8B` in the project root.
+Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) and place it in a folder named `Qwen3-8B` in the project root.
 
 ### 5. Run the assistant
 
@@ -64,4 +65,4 @@ Important:
 - It is not able to access any files.
 - It is not able to access your camera.
 - There is no data being sent to any servers.
-- The only times it will access the internet is when you first run it and it downloads the required models..
+- The only times it will access the internet is when you first run it and it downloads the required models.
