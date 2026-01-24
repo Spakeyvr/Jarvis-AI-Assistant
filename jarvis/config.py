@@ -31,7 +31,7 @@ WAKE_WORD_SENSITIVITY = "medium"  # Options: "low", "medium", "high" - controls 
 
 # Conversation continuation settings
 # When enabled, you can continue talking without saying "Hey Jarvis" for a few seconds after a response
-CONTINUE_CONVERSATION_ENABLED = True
+CONTINUE_CONVERSATION_ENABLED = False
 CONTINUE_CONVERSATION_TIMEOUT = 2  # Seconds to wait for follow-up before returning to wake word mode
 
 # Speech-to-text settings (Distil-Whisper)
@@ -40,11 +40,11 @@ LISTEN_TIMEOUT = 5  # Seconds to listen for question after wake word
 SILENCE_THRESHOLD = 0.8  # Seconds of silence to end recording
 
 # LLM settings
-MAX_NEW_TOKENS = 500
+MAX_NEW_TOKENS = 1000
 TEMPERATURE = 0.6
 CONTEXT_WINDOW_SIZE = 4096  # Max tokens to keep in conversation history
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant. Provide brief, concise answers.
-Keep responses to 1-2 sentences maximum. Be direct and informative."""
+Keep responses to 1-2 sentences maximum. Be direct and informative. Do NOT use astericks (*) or bold text in any reply whatsoever."""
 
 # Text-to-speech settings
 PIPER_VOICE = "jarvis-high"  # Custom Jarvis voice (options: jarvis-high, jarvis-medium)

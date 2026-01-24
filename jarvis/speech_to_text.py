@@ -65,7 +65,7 @@ class SpeechToText:
         # Minimum thresholds for valid speech:
         # - RMS energy should be above background noise level (lowered to 0.01)
         # - Duration should be at least 0.2 seconds for meaningful speech
-        min_speech_energy = 0.02
+        min_speech_energy = 0.03
         min_speech_duration = 0.2
 
         if rms_energy < min_speech_energy or duration < min_speech_duration:
