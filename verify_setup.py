@@ -68,17 +68,33 @@ def main():
     print("\n[3/5] Checking model files...")
     project_root = Path(__file__).parent
 
-    # Check Qwen model
+    # Check for any LLM model (Qwen3-8B is recommended but not required)
     qwen_path = project_root / "Qwen3-8B"
-    if check_file(qwen_path, "Qwen3-8B model directory"):
-        # Check for key model files
+    llm_found = False
+
+    if qwen_path.exists():
         config_file = qwen_path / "config.json"
-        if not check_file(config_file, "Model config.json"):
-            print("   ⚠️  Model may be incomplete. Run the download command:")
-            print("   huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B")
-            all_good = False
-    else:
-        print("   ⚠️  Download the model with:")
+        if config_file.exists():
+            print(f"✅ Qwen3-8B model found (recommended)")
+            llm_found = True
+        else:
+            print(f"⚠️  Qwen3-8B directory exists but may be incomplete (missing config.json)")
+
+    # Look for other potential LLM directories if Qwen3-8B not found
+    if not llm_found:
+        potential_llm_dirs = [d for d in project_root.iterdir()
+                             if d.is_dir() and (d / "config.json").exists()
+                             and any(f.suffix in [".safetensors", ".bin"] for f in d.iterdir() if f.is_file())]
+
+        if potential_llm_dirs:
+            for llm_dir in potential_llm_dirs:
+                print(f"✅ LLM model found: {llm_dir.name}")
+                llm_found = True
+            print("   ℹ️  Note: Qwen3-8B is recommended for best results")
+
+    if not llm_found:
+        print("❌ No LLM model found")
+        print("   ⚠️  Download the recommended model with:")
         print("   huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B")
         all_good = False
 
