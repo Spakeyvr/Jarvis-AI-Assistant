@@ -19,7 +19,7 @@ class SpeechToText:
 
         model = AutoModelForSpeechSeq2Seq.from_pretrained(
             model_id,
-            torch_dtype=torch_dtype,
+            dtype=torch_dtype,
             low_cpu_mem_usage=True,
             use_safetensors=True
         )
@@ -27,12 +27,15 @@ class SpeechToText:
 
         processor = AutoProcessor.from_pretrained(model_id)
 
+        # Configure feature extractor to avoid deprecated return_token_timestamps
+        processor.feature_extractor.return_attention_mask = True
+
         self.pipe = pipeline(
             "automatic-speech-recognition",
             model=model,
             tokenizer=processor.tokenizer,
             feature_extractor=processor.feature_extractor,
-            torch_dtype=torch_dtype,
+            dtype=torch_dtype,
             device=device,
         )
         self.sample_rate = config.SAMPLE_RATE

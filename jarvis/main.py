@@ -5,6 +5,10 @@ Main entry point that runs the Jarvis assistant in the background,
 listening for 'Hey Jarvis' wake word and responding to questions.
 """
 
+# Disable TensorFlow oneDNN info messages before any imports
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 import sys
 import signal
 import time
@@ -56,7 +60,7 @@ class Jarvis:
 
     def process_question(self, question):
         """
-        Process a question and generate a spoken response.
+        Process a question and generate a spoken response with streaming TTS.
 
         Args:
             question: The transcribed question from the user
@@ -67,11 +71,9 @@ class Jarvis:
 
         print(f"\nProcessing question: '{question}'")
 
-        # Generate response using LLM
-        response = self.llm.generate_response(question)
-
-        # Speak the response
-        self.tts.speak(response)
+        # Generate response using streaming LLM and speak as it generates
+        text_stream = self.llm.generate_response_streaming(question)
+        self.tts.speak_streaming(text_stream)
 
     def _setup_global_keyboard_hook(self):
         """Setup global keyboard hook for Ctrl+C that works even when terminal isn't focused."""

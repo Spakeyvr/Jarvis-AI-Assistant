@@ -12,9 +12,9 @@ MODELS_DIR = BASE_DIR / "models"
 LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3-8B"
 
 # Audio settings
-SAMPLE_RATE = 16000  # Required for Vosk and Whisper
+SAMPLE_RATE = 16000  # Required for Whisper
 CHANNELS = 1
-CHUNK_SIZE = 8000  # Audio chunk size for processing (0.5 seconds at 16kHz)
+CHUNK_SIZE = 1280  # Audio chunk size for openWakeWord (80ms @ 16kHz)
 MIC_DEVICE_INDEX = None  # None = use system default, or set to device index number
 
 # Wake word settings
@@ -37,13 +37,11 @@ CONTINUE_CONVERSATION_TIMEOUT = 2  # Seconds to wait for follow-up before return
 # Speech-to-text settings (Distil-Whisper)
 WHISPER_MODEL = "distil-whisper/distil-large-v3"  # ~750M params, fast & accurate
 LISTEN_TIMEOUT = 5  # Seconds to listen for question after wake word
-SILENCE_THRESHOLD = 0.8  # Seconds of silence to end recording
+SILENCE_THRESHOLD = 1  # Seconds of silence to end recording
 
 # LLM settings
 LLM_QUANTIZATION = "4bit"  # Options: "4bit", "8bit", "none" (full precision requires ~16GB+ VRAM)
-LLM_CPU_OFFLOAD = False  # Set to True to offload layers to CPU if model doesn't fit in VRAM
-MAX_NEW_TOKENS = 1000
-TEMPERATURE = 0.6
+MAX_NEW_TOKENS = 256  # Reduced for VRAM stability and faster responses
 CONTEXT_WINDOW_SIZE = 4096  # Max tokens to keep in conversation history
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant. Provide brief, concise answers.
 Keep responses to 1-2 sentences maximum. Be direct and informative. Do NOT use astericks (*) or bold text in any reply whatsoever."""

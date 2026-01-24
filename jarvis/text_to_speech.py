@@ -168,6 +168,56 @@ class TextToSpeech:
         if len(audio_data) > 0:
             play_audio(audio_data, sample_rate)
 
+    def speak_streaming(self, text_iterator):
+        """
+        Speak text as it streams in, buffering by sentence for natural speech.
+
+        Args:
+            text_iterator: An iterator/generator that yields text chunks
+        """
+        buffer = ""
+        sentence_endings = {'.', '!', '?'}
+        full_response = ""
+
+        print("Jarvis: ", end="", flush=True)
+
+        for chunk in text_iterator:
+            buffer += chunk
+            full_response += chunk
+            print(chunk, end="", flush=True)
+
+            # Check for complete sentences and speak them
+            while True:
+                # Find the earliest sentence ending
+                earliest_idx = -1
+                for ending in sentence_endings:
+                    idx = buffer.find(ending)
+                    if idx != -1:
+                        if earliest_idx == -1 or idx < earliest_idx:
+                            earliest_idx = idx
+
+                if earliest_idx == -1:
+                    break
+
+                # Extract the sentence (include the punctuation)
+                sentence = buffer[:earliest_idx + 1].strip()
+                buffer = buffer[earliest_idx + 1:]
+
+                if sentence:
+                    # Synthesize and play this sentence immediately
+                    audio_data, sample_rate = self.synthesize(sentence)
+                    if len(audio_data) > 0:
+                        play_audio(audio_data, sample_rate)
+
+        # Speak any remaining text that didn't end with sentence punctuation
+        remaining = buffer.strip()
+        if remaining:
+            audio_data, sample_rate = self.synthesize(remaining)
+            if len(audio_data) > 0:
+                play_audio(audio_data, sample_rate)
+
+        print()  # Newline after streaming output
+
 
 if __name__ == "__main__":
     # Test text-to-speech
