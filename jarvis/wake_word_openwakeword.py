@@ -38,6 +38,10 @@ class WakeWordDetector:
 
     def start_listening(self):
         """Start the audio recorder for wake word detection."""
+        # Reset the model's internal audio buffer to clear any residual state
+        # This prevents false detections from previous audio (e.g., TTS output)
+        self.model.reset()
+
         self.recorder = AudioRecorder()
         self.recorder.start()
 

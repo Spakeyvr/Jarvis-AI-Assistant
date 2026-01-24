@@ -140,11 +140,10 @@ class Jarvis:
                         # Allow follow-up questions without wake word
                         self._handle_follow_up_conversation()
 
-                    # Wait for TTS audio and speaker output to fully finish
-                    # This prevents the microphone from picking up residual audio
-                    time.sleep(1.0)
+                    # Wait for TTS audio to fully finish playing through speakers
+                    time.sleep(0.5)
 
-                    # Resume wake word listening
+                    # Resume wake word listening (model is reset in start_listening)
                     print("\nListening for 'Hey Jarvis'...")
                     self.wake_word.start_listening()
 
