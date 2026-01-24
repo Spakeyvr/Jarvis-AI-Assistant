@@ -2,7 +2,7 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 
 - Listen for the wake word 'Hey Jarvis' using openWakeWord (dedicated wake word detection)
 - Transcribe speech to text using Distil-Whisper
-- Generate responses using Qwen3-8B (8B parameter LLM)
+- Generate responses using your choice of LLM. Qwen3-8B is recommended.
 - Speak responses using Piper TTS with custom Jarvis voice
 
 ## System Requirements
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ```
 
 ### 4. Download the Qwen3-8B model
-
+#### This step uses the recommended LLM, you can choose your own
 The language model is not included in this repository due to its size (~16 GB). Download it from Hugging Face:
 
 ```bash
