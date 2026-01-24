@@ -8,7 +8,7 @@ BASE_DIR = Path(__file__).parent
 PROJECT_ROOT = BASE_DIR.parent
 MODELS_DIR = BASE_DIR / "models"
 
-# Qwen3-8B model path
+# Qwen3 model path
 LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3-8B"
 
 # Audio settings
@@ -40,6 +40,8 @@ LISTEN_TIMEOUT = 5  # Seconds to listen for question after wake word
 SILENCE_THRESHOLD = 0.8  # Seconds of silence to end recording
 
 # LLM settings
+LLM_QUANTIZATION = "4bit"  # Options: "4bit", "8bit", "none" (full precision requires ~16GB+ VRAM)
+LLM_CPU_OFFLOAD = False  # Set to True to offload layers to CPU if model doesn't fit in VRAM
 MAX_NEW_TOKENS = 1000
 TEMPERATURE = 0.6
 CONTEXT_WINDOW_SIZE = 4096  # Max tokens to keep in conversation history
