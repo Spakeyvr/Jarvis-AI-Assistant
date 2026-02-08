@@ -3,7 +3,8 @@ transformers
 accelerate
 bitsandbytes
 huggingface-hub
-piper-tts
+kokoro>=0.9.4
+hf_xet
 sounddevice
 soundfile
 numpy

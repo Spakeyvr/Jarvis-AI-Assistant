@@ -46,16 +46,7 @@ CONTEXT_WINDOW_SIZE = 4096  # Max tokens to keep in conversation history
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant. Provide brief, concise answers.
 Keep responses to 1-2 sentences maximum. Be direct and informative. Do NOT use astericks (*) or bold text in any reply whatsoever."""
 
-# Text-to-speech settings
-PIPER_VOICE = "jarvis-high"  # Custom Jarvis voice (options: jarvis-high, jarvis-medium)
-PIPER_MODEL_DIR = MODELS_DIR / "piper"
-
-# Custom Jarvis voice paths
-JARVIS_VOICE_DIR = PROJECT_ROOT / "jarvis-voice" / "en" / "en_GB" / "jarvis"
-JARVIS_VOICES = {
-    "jarvis-high": JARVIS_VOICE_DIR / "high",
-    "jarvis-medium": JARVIS_VOICE_DIR / "medium", # This Jarvis voice will be replaced by a new & better voice in the future
-}
-
-# Create directories if they don't exist
-os.makedirs(PIPER_MODEL_DIR, exist_ok=True)
+# Text-to-speech settings (Kokoro)
+KOKORO_VOICE = "bm_daniel"  # British male voice
+KOKORO_LANG_CODE = "b"  # British English
+KOKORO_SPEED = 1.0

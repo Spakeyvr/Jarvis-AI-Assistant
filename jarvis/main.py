@@ -44,7 +44,7 @@ class Jarvis:
         from llm_handler import LLMHandler
         self.llm = LLMHandler()
 
-        print("\n[4/4] Loading text-to-speech (Piper)...")
+        print("\n[4/4] Loading text-to-speech (Kokoro)...")
         from text_to_speech import TextToSpeech
         self.tts = TextToSpeech()
 
