@@ -83,7 +83,7 @@ This may take a few minutes depending on your internet connection.
 - Completely offline operation after initial setup
 
 **Important limitations:**
-- No real-time data access
+- No real-time data access (except for current date)
 - No internet access (offline only)
 - No screen/camera access
 - No file system access
