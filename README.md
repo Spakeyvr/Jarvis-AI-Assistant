@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Jarvis-banner.png" alt="Jarvis AI Assistant Banner" />
+</p>
+
 This is a Jarvis AI assistant that can be used to answer questions and perform tasks. It can do the following:
 
 - Listen for the wake word 'Hey Jarvis' using openWakeWord (dedicated wake word detection)
