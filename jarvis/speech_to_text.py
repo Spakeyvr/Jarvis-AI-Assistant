@@ -35,6 +35,7 @@ class SpeechToText:
             model=model,
             tokenizer=processor.tokenizer,
             feature_extractor=processor.feature_extractor,
+            max_new_tokens=128,
             dtype=torch_dtype,
             device=device,
         )

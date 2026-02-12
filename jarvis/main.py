@@ -30,14 +30,8 @@ class Jarvis:
         from speech_to_text import SpeechToText
         self.stt = SpeechToText()
 
-        print("\n[2/4] Loading wake word detector...")
-        # Import wake word detector based on config
-        if config.WAKE_WORD_ENGINE == "openwakeword":
-            print("Using openWakeWord engine (dedicated wake word detection)")
-            from wake_word_openwakeword import WakeWordDetector
-        else:
-            print("Using Whisper engine (legacy)")
-            from wake_word import WakeWordDetector
+        print("\n[2/4] Loading wake word detector (openWakeWord)...")
+        from wake_word_openwakeword import WakeWordDetector
         self.wake_word = WakeWordDetector()
 
         print("\n[3/4] Loading LLM (Qwen3-8B)...")

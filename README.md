@@ -95,9 +95,6 @@ You can customize Jarvis by editing `jarvis/config.py`:
 # Adjust wake word sensitivity (0.0-1.0)
 OPENWAKEWORD_THRESHOLD = 0.5  # Lower = more sensitive, higher = stricter
 
-# Switch to legacy Whisper wake word engine (not recommended)
-WAKE_WORD_ENGINE = "whisper"  # Default: "openwakeword"
-
 # Enable debug mode to see detection scores
 WAKE_WORD_DEBUG = True
 ```

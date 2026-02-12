@@ -214,7 +214,8 @@ def record_until_silence(max_duration=config.LISTEN_TIMEOUT,
             rms = np.sqrt(np.mean(chunk**2))
             if rms < silence_threshold:
                 silence_chunks += 1
-                if silence_chunks >= chunks_for_silence and chunk_count > chunks_for_silence:
+                min_chunks_before_silence = int(2 * sample_rate / config.CHUNK_SIZE)
+                if silence_chunks >= chunks_for_silence and chunk_count > min_chunks_before_silence:
                     break
             else:
                 silence_chunks = 0
