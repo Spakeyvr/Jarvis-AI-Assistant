@@ -26,19 +26,19 @@ class Jarvis:
         print("=" * 50)
 
         # Import and initialize components
-        print("\n[1/4] Loading speech-to-text (Distil-Whisper)...")
+        print("\n[1/5] Loading speech-to-text (Distil-Whisper)...")
         from speech_to_text import SpeechToText
         self.stt = SpeechToText()
 
-        print("\n[2/4] Loading wake word detector (openWakeWord)...")
+        print("\n[2/5] Loading wake word detector (openWakeWord)...")
         from wake_word_openwakeword import WakeWordDetector
         self.wake_word = WakeWordDetector()
 
-        print("\n[3/4] Loading LLM (Qwen3-8B)...")
+        print("\n[3/5] Loading LLM (Qwen3-8B)...")
         from llm_handler import LLMHandler
         self.llm = LLMHandler()
 
-        print("\n[4/4] Loading text-to-speech (Kokoro)...")
+        print("\n[4/5] Loading text-to-speech (Kokoro)...")
         from text_to_speech import TextToSpeech
         self.tts = TextToSpeech()
 

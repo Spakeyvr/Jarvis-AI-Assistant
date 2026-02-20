@@ -141,7 +141,7 @@ class LLMHandler:
             outputs = self.model.generate(
                 **inputs,
                 max_new_tokens=config.MAX_NEW_TOKENS,
-                do_sample=true,
+                do_sample=False,
                 pad_token_id=self.tokenizer.pad_token_id or self.tokenizer.eos_token_id
             )
 

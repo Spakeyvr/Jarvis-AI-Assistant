@@ -34,8 +34,8 @@ SILENCE_THRESHOLD = 1  # Seconds of silence to end recording
 
 # LLM settings
 LLM_QUANTIZATION = "4bit"  # Options: "4bit", "8bit", "none" (full precision requires ~16GB+ VRAM)
-MAX_NEW_TOKENS = 256  # Reduced for VRAM stability and faster responses
-CONTEXT_WINDOW_SIZE = 4096  # Max tokens to keep in conversation history
+MAX_NEW_TOKENS = 256
+CONTEXT_WINDOW_SIZE = 4096
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant. Provide brief, concise answers.
 Keep responses to 1-2 sentences maximum. Be direct and informative. Do NOT use astericks (*) or bold text in any reply whatsoever."""
 

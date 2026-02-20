@@ -196,6 +196,7 @@ def record_until_silence(max_duration=config.LISTEN_TIMEOUT,
     silence_chunks = 0
     chunks_for_silence = int(silence_duration * sample_rate / config.CHUNK_SIZE)
     max_chunks = int(max_duration * sample_rate / config.CHUNK_SIZE)
+    min_chunks_before_silence = int(2 * sample_rate / config.CHUNK_SIZE)
 
     recorder = AudioRecorder(sample_rate, device=device)
     recorder.start()
@@ -214,7 +215,6 @@ def record_until_silence(max_duration=config.LISTEN_TIMEOUT,
             rms = np.sqrt(np.mean(chunk**2))
             if rms < silence_threshold:
                 silence_chunks += 1
-                min_chunks_before_silence = int(2 * sample_rate / config.CHUNK_SIZE)
                 if silence_chunks >= chunks_for_silence and chunk_count > min_chunks_before_silence:
                     break
             else:
