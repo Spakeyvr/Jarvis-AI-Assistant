@@ -7,7 +7,7 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 - Listen for the wake word 'Hey Jarvis' using openWakeWord (dedicated wake word detection)
 - Transcribe speech to text using Distil-Whisper
 - Generate responses using your choice of LLM. Qwen3-8B is recommended.
-- Speak responses using Piper TTS with custom Jarvis voice
+- Speak responses using Kokoro TTS
 
 ## System Requirements
 
@@ -18,13 +18,7 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 
 ## Installation
 
-### 1. Install Git LFS (for voice models)
-
-```bash
-git lfs install
-```
-
-### 2. Clone the repository
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/Spakeyvr/Jarvis-AI-Assistant.git
@@ -32,13 +26,13 @@ cd Jarvis-AI-Assistant
 ```
 (You can also download the .zip file and extract it in case you aren't experienced with Git)
 
-### 3. Install Python dependencies
+### 2. Install Python dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Download the Qwen3-8B model
+### 3. Download the Qwen3-8B model
 #### This step uses the recommended LLM, you can choose your own
 The language model is not included in this repository due to its size (~16 GB). Download it from Hugging Face:
 
@@ -49,7 +43,7 @@ huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B
 
 Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen2.5-8B-Instruct) and place it in a folder named `Qwen3-8B` in the project root.
 
-### 4.5. Verify your installation (optional but recommended)
+### 3.5. Verify your installation (optional but recommended)
 
 ```bash
 python verify_setup.py
@@ -57,7 +51,7 @@ python verify_setup.py
 
 This will check that all dependencies are installed and models are in place.
 
-### 5. Run the assistant
+### 4. Run the assistant
 
 ```bash
 # Windows
@@ -70,7 +64,7 @@ python jarvis/main.py
 **On first run**, the following models will be automatically downloaded:
 - Distil-Whisper (~750 MB) - for speech recognition
 - openWakeWord models (~15 MB) - for wake word detection
-- Piper voice models (if not already present)
+- Kokoro TTS model (~500 MB) - for speech synthesis
 
 This may take a few minutes depending on your internet connection.
 
@@ -110,6 +104,18 @@ CONTINUE_CONVERSATION_ENABLED = True
 
 # Time window for follow-up questions (seconds)
 CONTINUE_CONVERSATION_TIMEOUT = 2
+```
+
+### Voice & TTS
+```python
+# Change the Kokoro voice
+KOKORO_VOICE = "bm_daniel"  # British male voice (default)
+
+# Change language/accent
+KOKORO_LANG_CODE = "b"  # "b" = British English, "a" = American English
+
+# Adjust speech speed
+KOKORO_SPEED = 1.0  # 1.0 = normal, higher = faster
 ```
 
 ### Microphone Selection
