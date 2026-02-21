@@ -38,10 +38,10 @@ The language model is not included in this repository due to its size (~16 GB). 
 
 ```bash
 # Download the model (huggingface-hub is already in requirements.txt)
-huggingface-cli download Qwen/Qwen2.5-8B-Instruct --local-dir Qwen3-8B
+huggingface-cli download Qwen/Qwen3-8B -local-dir Qwen3-8B
 ```
 
-Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen2.5-8B-Instruct) and place it in a folder named `Qwen3-8B` in the project root.
+Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) and place it in a folder named `Qwen3-8B` in the project root.
 
 ### 3.5. Verify your installation (optional but recommended)
 
@@ -139,3 +139,6 @@ MIC_DEVICE_INDEX = 22  # Set to your microphone's device index
 - Speak immediately after the acknowledgment sound
 - Check microphone levels in your system settings
 - Adjust `LISTEN_TIMEOUT` and `SILENCE_THRESHOLD` in `config.py`
+
+**This is still an early build and may be somewhat broken or weird.**
+Do not expect a perfectly functioning assistant like Gemini voice mode. It can answer most questions, but it won't be the best at it.
