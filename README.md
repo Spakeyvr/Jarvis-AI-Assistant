@@ -140,5 +140,7 @@ MIC_DEVICE_INDEX = 22  # Set to your microphone's device index
 - Check microphone levels in your system settings
 - Adjust `LISTEN_TIMEOUT` and `SILENCE_THRESHOLD` in `config.py`
 
+
+
 **This is still an early build and may be somewhat broken or weird.**
 Do not expect a perfectly functioning assistant like Gemini voice mode. It can answer most questions, but it won't be the best at it.
