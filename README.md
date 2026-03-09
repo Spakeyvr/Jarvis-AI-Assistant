@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="Jarvis-banner.jpg" alt="Jarvis AI Assistant Banner" />
+  <img src="Jarvis-banner.jpg"/>
 </p>
 
 This is a Jarvis AI assistant that can be used to answer questions and perform tasks. It can do the following:
@@ -11,7 +11,6 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 
 ## System Requirements
 
-- **Python**: 3.10, 3.11, or 3.12 (3.13+ is **not** supported due to dependency constraints)
 - **Disk Space**: ~18 GB for models
 - **RAM**: 8 GB minimum (16 GB recommended)
 - **GPU**: Optional (CUDA-compatible GPU will improve performance)
@@ -29,16 +28,8 @@ cd Jarvis-AI-Assistant
 
 ### 2. Install Python dependencies
 
-> **Note:** You must use Python 3.10–3.12. If you have multiple Python versions installed, make sure to create a virtual environment with the correct one (e.g. `py -3.12 -m venv venv` on Windows).
-
 ```bash
 pip install -r requirements.txt
-```
-
-If you want NVIDIA GPU acceleration, replace the default CPU-only PyTorch wheel with the CUDA build:
-
-```bash
-pip install --upgrade --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 ```
 
 ### 3. Download the Qwen3.5-9B model
@@ -108,12 +99,10 @@ WAKE_WORD_DEBUG = True
 
 ### Multimodal (Screenshot Input)
 ```python
-# Enable multimodal mode - allows Jarvis to see your screen on demand
-MULTIMODAL = True  # Default: True
+# Enable multimodal mode - captures a screenshot with each query
+MULTIMODAL = True  # Default: False
 ```
-When enabled, Jarvis can capture a screenshot when it determines visual context is needed. Ask things like "What's on my screen?" or "Read this for me" and Jarvis will automatically take a screenshot to answer. Text-only questions won't trigger a screenshot.
-
-To force text-only mode without editing the file, set `JARVIS_MULTIMODAL=0` before starting Jarvis.
+When enabled, Jarvis captures a screenshot on every query and sends it alongside your question to the model. This lets you ask things like "What's on my screen?" or "Summarize this page."
 
 ### Follow-up Conversation
 ```python
