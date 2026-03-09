@@ -8,8 +8,14 @@ BASE_DIR = Path(__file__).parent
 PROJECT_ROOT = BASE_DIR.parent
 MODELS_DIR = BASE_DIR / "models"
 
-# Qwen3 model path
-LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3-8B"
+# Qwen3.5 model path
+LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3.5-9B"
+
+# Multimodal settings
+# Enabled by default because the bundled Qwen3.5 checkpoint supports vision input.
+# Set JARVIS_MULTIMODAL=0 to force text-only mode without editing this file.
+MULTIMODAL = os.getenv("JARVIS_MULTIMODAL", "1").strip().lower() not in {"0", "false", "no", "off"}
+SCREENSHOT_MAX_DIMENSION = 1280  # Downscale large screenshots before vision inference for lower latency
 
 # Audio settings
 SAMPLE_RATE = 16000  # Required for Whisper

@@ -1,6 +1,7 @@
 # Model files (too large for GitHub)
 jarvis/models/
 Qwen3-8B/
+Qwen3.5-9B/
 
 # Training checkpoints (not needed for inference)
 *.ckpt

@@ -3,8 +3,6 @@
 import numpy as np
 import sounddevice as sd
 import soundfile as sf
-from collections import deque
-import threading
 import queue
 import config
 

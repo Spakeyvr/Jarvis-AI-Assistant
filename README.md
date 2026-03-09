@@ -6,11 +6,12 @@ This is a Jarvis AI assistant that can be used to answer questions and perform t
 
 - Listen for the wake word 'Hey Jarvis' using openWakeWord (dedicated wake word detection)
 - Transcribe speech to text using Distil-Whisper
-- Generate responses using your choice of LLM. Qwen3-8B is recommended.
+- Generate responses using your choice of LLM. Qwen3.5-9B is recommended.
 - Speak responses using Kokoro TTS
 
 ## System Requirements
 
+- **Python**: 3.10, 3.11, or 3.12 (3.13+ is **not** supported due to dependency constraints)
 - **Disk Space**: ~18 GB for models
 - **RAM**: 8 GB minimum (16 GB recommended)
 - **GPU**: Optional (CUDA-compatible GPU will improve performance)
@@ -28,20 +29,28 @@ cd Jarvis-AI-Assistant
 
 ### 2. Install Python dependencies
 
+> **Note:** You must use Python 3.10–3.12. If you have multiple Python versions installed, make sure to create a virtual environment with the correct one (e.g. `py -3.12 -m venv venv` on Windows).
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Download the Qwen3-8B model
+If you want NVIDIA GPU acceleration, replace the default CPU-only PyTorch wheel with the CUDA build:
+
+```bash
+pip install --upgrade --force-reinstall torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
+```
+
+### 3. Download the Qwen3.5-9B model
 #### This step uses the recommended LLM, you can choose your own
 The language model is not included in this repository due to its size (~16 GB). Download it from Hugging Face:
 
 ```bash
 # Download the model (huggingface-hub is already in requirements.txt)
-huggingface-cli download Qwen/Qwen3-8B -local-dir Qwen3-8B
+huggingface-cli download Qwen/Qwen3.5-9B --local-dir Qwen3.5-9B
 ```
 
-Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen3-8B) and place it in a folder named `Qwen3-8B` in the project root.
+Alternatively, you can download it manually from [Hugging Face](https://huggingface.co/Qwen/Qwen3.5-9B) and place it in a folder named `Qwen3.5-9B` in the project root.
 
 ### 3.5. Verify your installation (optional but recommended)
 
@@ -79,7 +88,7 @@ This may take a few minutes depending on your internet connection.
 **Important limitations:**
 - No real-time data access (except for current date)
 - No internet access (offline only)
-- No screen/camera access
+- No screen/camera access (unless multimodal mode is enabled)
 - No file system access
 - No data sent to external servers
 - Internet only used for initial model downloads
@@ -96,6 +105,15 @@ OPENWAKEWORD_THRESHOLD = 0.5  # Lower = more sensitive, higher = stricter
 # Enable debug mode to see detection scores
 WAKE_WORD_DEBUG = True
 ```
+
+### Multimodal (Screenshot Input)
+```python
+# Enable multimodal mode - allows Jarvis to see your screen on demand
+MULTIMODAL = True  # Default: True
+```
+When enabled, Jarvis can capture a screenshot when it determines visual context is needed. Ask things like "What's on my screen?" or "Read this for me" and Jarvis will automatically take a screenshot to answer. Text-only questions won't trigger a screenshot.
+
+To force text-only mode without editing the file, set `JARVIS_MULTIMODAL=0` before starting Jarvis.
 
 ### Follow-up Conversation
 ```python

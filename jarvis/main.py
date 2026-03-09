@@ -34,7 +34,7 @@ class Jarvis:
         from wake_word_openwakeword import WakeWordDetector
         self.wake_word = WakeWordDetector()
 
-        print("\n[3/5] Loading LLM (Qwen3-8B)...")
+        print("\n[3/5] Loading LLM (Qwen3.5-9B)...")
         from llm_handler import LLMHandler
         self.llm = LLMHandler()
 
@@ -52,6 +52,26 @@ class Jarvis:
         print("Jarvis AI initialized successfully!")
         print("=" * 50)
 
+    def capture_image(self):
+        """Capture a screenshot if multimodal mode is enabled."""
+        if not config.MULTIMODAL:
+            return None
+        try:
+            from PIL import ImageGrab
+            screenshot = ImageGrab.grab()
+
+            max_dimension = getattr(config, "SCREENSHOT_MAX_DIMENSION", 1280)
+            if max_dimension and max(screenshot.size) > max_dimension:
+                screenshot.thumbnail((max_dimension, max_dimension))
+
+            if screenshot.mode != "RGB":
+                screenshot = screenshot.convert("RGB")
+
+            return screenshot
+        except Exception as exc:
+            print(f"Screenshot capture failed: {exc}")
+            return None
+
     def process_question(self, question):
         """
         Process a question and generate a spoken response with streaming TTS.
@@ -65,9 +85,32 @@ class Jarvis:
 
         print(f"\nProcessing question: '{question}'")
 
+        # Skip the initial model pass for obvious screen-reading requests.
+        if self.llm.should_capture_screenshot(question):
+            print("Direct screenshot intent detected, capturing immediately...")
+            image = self.capture_image()
+            if image:
+                self.tts.speak("Let me take a look.")
+                text_stream = self.llm.generate_response_streaming(question, image=image)
+                self.tts.speak_streaming(text_stream)
+            else:
+                self.tts.speak("I couldn't capture your screen. Please check screen capture permissions and try again.")
+            return
+
         # Generate response using streaming LLM and speak as it generates
         text_stream = self.llm.generate_response_streaming(question)
         self.tts.speak_streaming(text_stream)
+
+        # If the model requested a screenshot, capture and re-query with the image
+        if self.llm.screenshot_requested:
+            print("Screenshot requested by model, capturing...")
+            image = self.capture_image()
+            if image:
+                self.tts.speak("Let me take a look.")
+                text_stream = self.llm.generate_response_streaming(question, image=image)
+                self.tts.speak_streaming(text_stream)
+            else:
+                self.tts.speak("I couldn't capture your screen. Please check screen capture permissions and try again.")
 
     def _setup_global_keyboard_hook(self):
         """Setup global keyboard hook for Ctrl+C that works even when terminal isn't focused."""
