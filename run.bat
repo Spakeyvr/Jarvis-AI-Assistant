@@ -1,13 +1,13 @@
 @echo off
 
-if not exist "venv\Scripts\activate.bat" (
+if not exist ".venv\Scripts\activate.bat" (
     echo Creating virtual environment...
-    python -m venv venv
-    call venv\Scripts\activate.bat
+    py -3.12 -m venv .venv
+    call .venv\Scripts\activate.bat
     echo Installing dependencies...
     pip install -r requirements.txt
 ) else (
-    call venv\Scripts\activate.bat
+    call .venv\Scripts\activate.bat
 )
 
 python jarvis\main.py

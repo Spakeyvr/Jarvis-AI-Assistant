@@ -7,8 +7,8 @@ BASE_DIR = Path(__file__).parent
 PROJECT_ROOT = BASE_DIR.parent
 MODELS_DIR = BASE_DIR / "models"
 
-# Qwen3 model path
-LLM_MODEL_PATH = PROJECT_ROOT / "Qwen3-8B"
+# model path
+LLM_MODEL_PATH = PROJECT_ROOT / "qwen3.5-9b-Q4"
 
 # Audio settings
 SAMPLE_RATE = 16000  # Required for Whisper
@@ -31,8 +31,16 @@ WHISPER_MODEL = "distil-whisper/distil-large-v3"  # ~750M params, fast & accurat
 LISTEN_TIMEOUT = 5  # Seconds to listen for question after wake word
 SILENCE_THRESHOLD = 1  # Seconds of silence to end recording
 
-# LLM settings
+# LLM backend selection
+LLM_BACKEND = "huggingface"  # Options: "huggingface", "gguf"
+
+# HuggingFace settings (only used when LLM_BACKEND = "huggingface")
 LLM_QUANTIZATION = "4bit"  # Options: "4bit", "8bit", "none" (full precision requires ~16GB+ VRAM)
+
+# GGUF settings (only used when LLM_BACKEND = "gguf")
+GGUF_MODEL_PATH = PROJECT_ROOT / "model.gguf"  # Path to your .gguf file
+GGUF_N_GPU_LAYERS = -1  # Layers to offload to GPU: -1 = all (full GPU), 0 = CPU only
+
 MAX_NEW_TOKENS = 256
 CONTEXT_WINDOW_SIZE = 4096
 SYSTEM_PROMPT = """You are Jarvis, a helpful AI assistant. Provide brief, concise answers.
